@@ -1,5 +1,3 @@
-import 'package:e_commerce/ui/screens/auth/login/login_states.dart';
-import 'package:e_commerce/ui/screens/auth/login/login_view_model.dart';
 import 'package:e_commerce/ui/screens/auth/register/register.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -10,20 +8,19 @@ import '../../../widgets/form_label.dart';
 
 class Login extends StatelessWidget {
   static const String routeName = 'login';
-  LoginViewModel viewModel = LoginViewModel();
+  TextEditingController emailController = TextEditingController();
+  TextEditingController passwordController = TextEditingController();
+  var formKey = GlobalKey<FormState>();
 
   @override
   Widget build(BuildContext context) {
-    return BlocConsumer<LoginViewModel, LoginStates>(
-      bloc:viewModel,
-        builder: (context, state) {
-      return Scaffold(
+    return Scaffold(
         backgroundColor: Theme.of(context).primaryColor,
         body: SingleChildScrollView(
           child: Padding(
             padding: const EdgeInsets.all(16.0),
             child: Form(
-              key: viewModel.formKey,
+              key: formKey,
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: [
@@ -56,7 +53,7 @@ class Login extends StatelessWidget {
                   ),
                   CustomTextFormField(
                       hintText: 'enter your email address',
-                      controller: viewModel.emailController,
+                      controller: emailController,
                       validator: (text) {
                         if (text == null || text.trim().isEmpty) {
                           return 'Please enter email';
@@ -82,7 +79,7 @@ class Login extends StatelessWidget {
                   ),
                   CustomTextFormField(
                     hintText: 'enter your password',
-                    controller: viewModel.passwordController,
+                    controller: passwordController,
                     validator: (text) {
                       if (text == null || text.trim().isEmpty) {
                         return 'Please enter password ';
@@ -110,7 +107,7 @@ class Login extends StatelessWidget {
                   CustomButtonWidget(
                       title: 'Login',
                       onPressed: () {
-                        viewModel.login();
+
                       }),
                   const SizedBox(
                     height: 16,
@@ -133,36 +130,5 @@ class Login extends StatelessWidget {
           ),
         ),
       );
-    },
-        listener: (context, state) {
-      if (state is SuccessState) {
-        Navigator.pop(context);
-      }
-      else if (state is ErrorState) {
-        Navigator.pop(context);
-        showDialog(
-            context: context,
-            builder: (context) {
-              return AlertDialog(
-                content: Text(state.message, style: TextStyle(color: Colors.black),),
-              );
-            });
-      }
-      else if (state is LoadingState) {
-        showDialog(
-            context: context,
-            builder: (context) {
-              return AlertDialog(
-                content: Row(
-                  children: [
-                    Text("Loading", style: TextStyle(color: Colors.black)),
-                    Spacer(),
-                    CircularProgressIndicator()
-                  ],
-                ),
-              );
-            });
-      }
-    });
   }
 }

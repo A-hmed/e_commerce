@@ -1,52 +1,22 @@
-import 'package:e_commerce/ui/screens/auth/login/login_states.dart';
-import 'package:e_commerce/ui/screens/auth/register/register_view_model.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-
 import '../../../widgets/custom_button.dart';
 import '../../../widgets/custom_text_form_field.dart';
 import '../../../widgets/form_label.dart';
 
 class Register extends StatelessWidget {
   static const String routeName = 'register';
-  RegisterViewModel viewModel = RegisterViewModel();
+
+  TextEditingController nameController = TextEditingController();
+  TextEditingController phoneController = TextEditingController();
+  TextEditingController emailController = TextEditingController();
+  TextEditingController passwordController = TextEditingController();
+  TextEditingController rePasswordController = TextEditingController();
+  var formKey = GlobalKey<FormState>();
 
   @override
   Widget build(BuildContext context) {
-    return BlocListener<RegisterViewModel, LoginStates>(
-      bloc: viewModel,
-      listener: (context, state) {
-        if (state is SuccessState) {
-          Navigator.pop(context);
-        } else if (state is ErrorState) {
-          Navigator.pop(context);
-          showDialog(
-              context: context,
-              builder: (context) {
-                return AlertDialog(
-                  content: Text(
-                    state.message,
-                    style: TextStyle(color: Colors.black),
-                  ),
-                );
-              });
-        } else if (state is LoadingState) {
-          showDialog(
-              context: context,
-              builder: (context) {
-                return AlertDialog(
-                  content: Row(
-                    children: [
-                      Text("Loading", style: TextStyle(color: Colors.black)),
-                      Spacer(),
-                      CircularProgressIndicator()
-                    ],
-                  ),
-                );
-              });
-        }
-      },
-      child: Scaffold(
+    return  Scaffold(
         backgroundColor: Theme.of(context).primaryColor,
         body: Column(
           children: [
@@ -63,7 +33,7 @@ class Register extends StatelessWidget {
                 child: Padding(
                   padding: const EdgeInsets.all(16.0),
                   child: Form(
-                    key: viewModel.formKey,
+                    key: formKey,
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.stretch,
                       children: [
@@ -73,7 +43,7 @@ class Register extends StatelessWidget {
                         ),
                         CustomTextFormField(
                             hintText: 'enter your full name',
-                            controller: viewModel.nameController,
+                            controller: nameController,
                             validator: (text) {
                               if (text == null || text.trim().isEmpty) {
                                 return 'Please enter full name';
@@ -90,7 +60,7 @@ class Register extends StatelessWidget {
                         ),
                         CustomTextFormField(
                             hintText: 'enter your email address',
-                            controller: viewModel.emailController,
+                            controller: emailController,
                             validator: (text) {
                               if (text == null || text.trim().isEmpty) {
                                 return 'Please enter email';
@@ -114,7 +84,7 @@ class Register extends StatelessWidget {
                         ),
                         CustomTextFormField(
                             hintText: 'enter your mobile number',
-                            controller: viewModel.phoneController,
+                            controller: phoneController,
                             validator: (text) {
                               if (text == null || text.trim().isEmpty) {
                                 return 'Please enter mobile number';
@@ -134,7 +104,7 @@ class Register extends StatelessWidget {
                         ),
                         CustomTextFormField(
                           hintText: 'enter your password',
-                          controller: viewModel.passwordController,
+                          controller: passwordController,
                           validator: (text) {
                             if (text == null || text.trim().isEmpty) {
                               return 'Please enter password ';
@@ -156,12 +126,12 @@ class Register extends StatelessWidget {
                         ),
                         CustomTextFormField(
                           hintText: 're-enter your password confirmation',
-                          controller: viewModel.rePasswordController,
+                          controller: rePasswordController,
                           validator: (text) {
                             if (text == null || text.trim().isEmpty) {
                               return 'Please re-enter password ';
                             }
-                            if (viewModel.passwordController.text != text) {
+                            if (passwordController.text != text) {
                               return "Password doesn't match.";
                             }
                             return null;
@@ -175,7 +145,6 @@ class Register extends StatelessWidget {
                         CustomButtonWidget(
                             title: 'Sign Up',
                             onPressed: () {
-                              viewModel.register();
                             })
                       ],
                     ),
@@ -185,7 +154,6 @@ class Register extends StatelessWidget {
             ),
           ],
         ),
-      ),
-    );
+      );
   }
 }
