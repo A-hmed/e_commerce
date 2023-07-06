@@ -6,7 +6,7 @@ class CustomTextFormField extends StatelessWidget {
   String hintText ;
   bool isPassword ;
   TextEditingController controller ;
-  String? Function(String?)? validator ;
+  String? Function(String?)? validator;
   TextInputType type ;
   CustomTextFormField({
     required this.hintText,
