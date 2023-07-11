@@ -22,6 +22,7 @@ abstract class SharedPrefsUtils{
   static Future<String?> getToken() async{
     final SharedPreferences prefs = await SharedPreferences.getInstance();
     String? token = prefs.getString("token");
+    return token;
   }
 
 }

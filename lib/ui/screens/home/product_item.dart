@@ -1,10 +1,12 @@
 import 'package:e_commerce/data/models/products_response.dart';
+import 'package:e_commerce/ui/screens/home/tabs/home/home_view_model.dart';
 import 'package:e_commerce/ui/utils/app_colors.dart';
 import 'package:flutter/material.dart';
 
 class ProductItem extends StatelessWidget {
   ProductDM productDM;
-  ProductItem(this.productDM);
+  Function onAddToCartClick;
+  ProductItem(this.productDM, this.onAddToCartClick);
 
   @override
   Widget build(BuildContext context) {
@@ -46,7 +48,7 @@ class ProductItem extends StatelessWidget {
                 child: FloatingActionButton(
                   backgroundColor: AppColors.primaryColor,
                   onPressed: (){
-
+                    onAddToCartClick();
                 }, child:const Icon(Icons.add, color: Colors.white,),),
               ),
             ],

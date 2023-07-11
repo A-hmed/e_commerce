@@ -1,5 +1,6 @@
 import 'package:e_commerce/ui/screens/auth/login/login.dart';
 import 'package:e_commerce/ui/screens/auth/register/register.dart';
+import 'package:e_commerce/ui/screens/cart_screen/cart_screen.dart';
 import 'package:e_commerce/ui/screens/home/home_screen.dart';
 import 'package:e_commerce/ui/screens/splash/splash.dart';
 import 'package:e_commerce/ui/utils/app_theme.dart';
@@ -21,7 +22,8 @@ class MyApp extends StatelessWidget {
         Login.routeName: (_) => Login(),
         Register.routeName: (_)=> Register(),
         HomeScreen.routeName: (_) =>HomeScreen(),
-        SplashScreen.routeName: (_) =>SplashScreen()
+        SplashScreen.routeName: (_) =>SplashScreen(),
+        CartScreen.routeName: (_) =>CartScreen()
       },
       initialRoute: SplashScreen.routeName,
     );

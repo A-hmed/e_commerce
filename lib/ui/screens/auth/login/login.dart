@@ -121,6 +121,7 @@ class Login extends StatelessWidget {
                     CustomButtonWidget(
                         title: 'Login',
                         onPressed: () {
+
                           viewModel.login();
                         }),
                     const SizedBox(

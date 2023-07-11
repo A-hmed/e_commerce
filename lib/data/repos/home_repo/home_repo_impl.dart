@@ -8,8 +8,8 @@ import 'package:e_commerce/data/models/products_response.dart';
 import 'package:e_commerce/domain/repos/home_repo/home_repo.dart';
 import 'package:e_commerce/ui/utils/SharedPrefrencesUtils.dart';
 import 'package:http/http.dart';
-
 import '../../../ui/utils/constants.dart';
+import '../../models/add_to_cart_response.dart';
 
 class HomeRepoImpl extends HomeRepo{
 
@@ -54,8 +54,30 @@ class HomeRepoImpl extends HomeRepo{
     }
   }
 
-  addToCart(String productId) async{
-    String token = (await SharedPrefsUtils.getToken())!;
+  @override
+  Future<Either<BaseError, AddToCartResponse>> addToCart(String productId) async {
+    final connectivityResult = await (Connectivity().checkConnectivity());
+    if(connectivityResult == ConnectivityResult.mobile
+        || connectivityResult == ConnectivityResult.wifi) {
+      String token = (await SharedPrefsUtils.getToken())!;
+      Uri url = Uri.https(Constants.baseUrl, EndPoints.addProductToCart);
+      Response serverResponse = await post(url, body: {
+        "productId":productId
+      },headers: {
+        "token": token
+      });
+      AddToCartResponse addProductToCartResponse =
+      AddToCartResponse.fromJson(jsonDecode(serverResponse.body));
+      if(serverResponse.statusCode < 300 && serverResponse.statusCode >= 200){
+        return Right(addProductToCartResponse);
+      }else if(serverResponse.statusCode == 401){
+        return Left(ExpiredTokenError(addProductToCartResponse.message!));
+      }else {
+        return Left(BaseError(addProductToCartResponse.message!));
+      }
+    }else {
+      return Left(BaseError(Constants.internetErrorMessage));
+    }
   }
 
 }

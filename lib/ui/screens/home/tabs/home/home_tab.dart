@@ -1,3 +1,4 @@
+import 'package:e_commerce/ui/screens/auth/login/login.dart';
 import 'package:e_commerce/ui/screens/home/product_item.dart';
 import 'package:e_commerce/ui/screens/home/tabs/home/home_view_model.dart';
 import 'package:e_commerce/ui/utils/app_colors.dart';
@@ -5,6 +6,7 @@ import 'package:e_commerce/ui/utils/dialog_utils.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_image_slideshow/flutter_image_slideshow.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 
 class HomeTab extends StatelessWidget {
   late double height;
@@ -20,33 +22,49 @@ class HomeTab extends StatelessWidget {
   Widget build(BuildContext context) {
     height = MediaQuery.of(context).size.height;
     width = MediaQuery.of(context).size.width;
-    return BlocConsumer(
-      bloc: viewModel..getProducts()..getCategories(),
-      listener: (context, state){
-        if(state is HomeErrorState){
-          showErrorDialog(context, state.message);
-        }
-      },
-      builder: (context, state){
-        if(state is HomeSuccessState) {
-          return SingleChildScrollView(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.stretch,
-              children: [
-                buildImagesSlider(),
-                buildCategoriesRow(),
-                buildCategoriesSection(),
-                buildProductsSection()
-              ],
-            ),
-          );
-        }else if(state is HomeLoadingState) {
-         return Center(child: CircularProgressIndicator());
-        }else {
-          return SizedBox();
-        }
-      },
-    );
+    return  BlocConsumer(
+      bloc: viewModel..getCategories()..getProducts(),
+        listener: (context, state){
+          if(state is HomeErrorState){
+            showErrorDialog(context, state.message);
+          }else if(state is NavigateToLoginScreenState){
+            Navigator.pushReplacementNamed(context, Login.routeName);
+          }else if(state is HomeDialogLoadingState){
+            showLoading(context);
+          }else if(state is AddProductSuccessState){
+            hideLoading(context);
+            Fluttertoast.showToast(
+                msg: "Added product Successfully",
+                toastLength: Toast.LENGTH_LONG,
+                gravity: ToastGravity.BOTTOM,
+                backgroundColor: Colors.black,
+                textColor: Colors.white,
+                fontSize: 16.0
+            );
+          }
+        },
+        builder: (context, state){
+          if(state is HomeSuccessState ||
+              state is AddProductSuccessState ||
+              state is HomeDialogLoadingState) {
+            return SingleChildScrollView(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                children: [
+                  buildImagesSlider(),
+                  buildCategoriesRow(),
+                  buildCategoriesSection(),
+                  buildProductsSection()
+                ],
+              ),
+            );
+          }else if(state is HomeLoadingState) {
+           return Center(child: CircularProgressIndicator());
+          }else {
+            return SizedBox();
+          }
+        },
+      );
   }
 
   Widget buildCategoriesRow(){
@@ -77,7 +95,9 @@ class HomeTab extends StatelessWidget {
           itemCount: viewModel.products!.length,
           scrollDirection: Axis.horizontal,
           itemBuilder: (context, index) {
-            return  ProductItem(viewModel.products![index]);
+            return  ProductItem(viewModel.products![index], (){
+              viewModel.addProductToCart(viewModel.products![index].id!);
+            });
           },
       ),
     );

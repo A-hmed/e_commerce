@@ -5,6 +5,7 @@ import 'package:e_commerce/ui/screens/home/tabs/wish_list/wish_list_tab.dart';
 import 'package:flutter/material.dart';
 
 import '../../utils/app_colors.dart';
+import '../cart_screen/cart_screen.dart';
 
 class HomeScreen extends StatefulWidget {
   static  String routeName = "home_screen";
@@ -29,12 +30,21 @@ class _HomeScreenState extends State<HomeScreen> {
       appBar: AppBar(
         title: Image.asset(
           "assets/images/app_bar_logo.png",
-          width: 66,
           color: AppColors.primaryColor,
-          height: 22,
         ),
         backgroundColor: Colors.white,
         elevation: 0,
+        actions: [
+          InkWell(
+            onTap: (){
+              Navigator.pushNamed(context, CartScreen.routeName);
+            },
+            child: Image.asset(
+              "assets/images/ic_cart.png",
+              color: AppColors.primaryColor,
+            ),
+          )
+        ],
       ),
       body: tabs[currentIndex],
       bottomNavigationBar: BottomNavigationBar(

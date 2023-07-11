@@ -9,5 +9,7 @@ abstract class EndPoints{
   static const String register = "api/v1/auth/signup";
   static const String getCategories = "api/v1/categories";
   static const String getAllProducts = "api/v1/products";
+  static const String addProductToCart = "api/v1/cart";
+  static const String getProductsInCart = "api/v1/cart";
 
 }
