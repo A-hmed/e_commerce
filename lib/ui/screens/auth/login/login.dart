@@ -1,6 +1,7 @@
 import 'package:e_commerce/ui/screens/auth/auth_states.dart';
 import 'package:e_commerce/ui/screens/auth/login/login_view_model.dart';
 import 'package:e_commerce/ui/screens/auth/register/register.dart';
+import 'package:e_commerce/ui/screens/home/home_screen.dart';
 import 'package:e_commerce/ui/utils/dialog_utils.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -24,6 +25,7 @@ class Login extends StatelessWidget {
           showErrorDialog(context, state.message);
         }else if(state is AuthSuccessState){
           hideLoading(context);
+          Navigator.pushNamed(context, HomeScreen.routeName);
         }
       },
      child: Scaffold(

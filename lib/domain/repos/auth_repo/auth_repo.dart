@@ -9,4 +9,6 @@ abstract class AuthRepo {
     required String email, required String password,
     required String rePassword,
     required String phoneNumber});
+
+  Future<bool> isAuthorized();
 }

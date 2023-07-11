@@ -4,6 +4,7 @@ import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:dartz/dartz.dart';
 import 'package:e_commerce/data/models/BaseError.dart';
 import 'package:e_commerce/data/models/auth_response.dart';
+import 'package:e_commerce/ui/utils/SharedPrefrencesUtils.dart';
 import 'package:e_commerce/ui/utils/constants.dart';
 import 'package:http/http.dart';
 import '../../../domain/repos/auth_repo/auth_repo.dart';
@@ -22,7 +23,9 @@ class AuthRepoImpl extends AuthRepo{
 
       var authResponse = AuthResponse.fromJson(jsonDecode(response.body));
       if(response.statusCode >= 200 && response.statusCode < 300){
-       return Right(authResponse); 
+        await SharedPrefsUtils.saveUser(authResponse.user!);
+        await SharedPrefsUtils.saveToken(authResponse.token!);
+        return Right(authResponse);
       }else {
         return Left(BaseError(authResponse.message!));
       }
@@ -45,12 +48,6 @@ class AuthRepoImpl extends AuthRepo{
          "phone": phoneNumber,
           "name": name,
         "password": password});
-      print("Register body: ${{"email": email,
-        "rePassword":rePassword,
-        "phone": phoneNumber,
-        "name": name,
-        "password": password}}");
-
 
       var authResponse = AuthResponse.fromJson(jsonDecode(response.body));
       print("Register: Response: ${response.body}");
@@ -63,6 +60,12 @@ class AuthRepoImpl extends AuthRepo{
     }else {
       return Left(BaseError(Constants.internetErrorMessage));
     }
+  }
+
+  @override
+  Future<bool> isAuthorized() async {
+    User? user = await SharedPrefsUtils.getUser();
+    return user != null;
   }
 
 }
